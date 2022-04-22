@@ -5,15 +5,15 @@
 
 """
     Bonus points if you want to have internship at AI Camp
-    1. How can we save what user built? And if we can save them, like allow them to publish, can we load the saved results back on the home page? 
-    2. Can you add a button for each generated item at the frontend to just allow that item to be added to the story that the user is building? 
-    3. What other features you'd like to develop to help AI write better with a user? 
-    4. How to speed up the model run? Quantize the model? Using a GPU to run the model? 
+    1. How can we save what user built? And if we can save them, like allow them to publish, can we load the saved results back on the home page?
+    2. Can you add a button for each generated item at the frontend to just allow that item to be added to the story that the user is building?
+    3. What other features you'd like to develop to help AI write better with a user?
+    4. How to speed up the model run? Quantize the model? Using a GPU to run the model?
 """
 
 # import basics
 import os
-
+import regex as re
 # import stuff for our web server
 from flask import Flask, request, redirect, url_for, render_template, session
 from utils import get_base_url
@@ -21,10 +21,9 @@ from utils import get_base_url
 from aitextgen import aitextgen
 
 # load up a model from memory. Note you may not need all of these options.
-# ai = aitextgen(model_folder="model/",
-#                tokenizer_file="model/aitextgen.tokenizer.json", to_gpu=False)
+ai = aitextgen(model_folder="model/", to_gpu=False)
 
-ai = aitextgen(model="distilgpt2", to_gpu=False)
+#ai = aitextgen(model="distilgpt2", to_gpu=False)
 
 # setup the webserver
 # port may need to be changed if there are multiple flask servers running on same server
@@ -65,19 +64,31 @@ def results():
 @app.route(f'{base_url}/generate_text/', methods=["POST"])
 def generate_text():
     """
-    view function that will return json response for generated text. 
+    view function that will return json response for generated text.
     """
 
     prompt = request.form['prompt']
+    valid_user = re.compile(r'\B@[._a-zA-Z0-9]{3,24}')
+    # no prompt option
     if prompt is not None:
         generated = ai.generate(
             n=1,
-            batch_size=3,
-            prompt=str(prompt),
-            max_length=300,
-            temperature=0.9,
+            # batch_size=3,
+            prompt=str(prompt).rstrip(),  # remove space
+            max_length=250,
+            temperature=1.0,
+            top_p=0.95,
             return_as_list=True
         )
+
+    # add style adjustment for mention
+
+    r = re.findall(valid_user, generated[0])
+    t = generated[0].split()
+    for i in range(len(t)):
+        if t[i] in r:
+            t[i] = "<a href=\"#\">" + t[i] + "</a>"
+    generated[0] = ' '.join(t)
 
     data = {'generated_ls': generated}
     session['data'] = generated[0]
@@ -92,7 +103,9 @@ def generate_text():
 
 if __name__ == '__main__':
     # IMPORTANT: change url to the site where you are editing this file.
-    website_url = 'coding.ai-camp.dev'
+    website_url = '0.0.0.0'
 
-    print(f'Try to open\n\n    https://{website_url}' + base_url + '\n\n')
+    #print(f'Try to open\n\n    https://{website_url}' + base_url + '\n\n')
     app.run(host='0.0.0.0', port=port, debug=True)
+
+
