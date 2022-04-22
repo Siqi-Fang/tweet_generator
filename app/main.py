@@ -58,7 +58,7 @@ def results():
         data = session['data']
         return render_template('Write-your-story-with-AI.html', generated=data)
     else:
-        return render_template('Write-your-story-with-AI.html', generated=None)
+        return render_template('Write-your-story-with-AI.html', generated='thinking of quitting my jobs & becoming an influencer full-time wdyt')
 
 
 @app.route(f'{base_url}/generate_text/', methods=["POST"])
@@ -103,9 +103,9 @@ def generate_text():
 
 if __name__ == '__main__':
     # IMPORTANT: change url to the site where you are editing this file.
-    website_url = '0.0.0.0'
+    website_url = 'cocalcg1.ai-camp.dev'
 
-    #print(f'Try to open\n\n    https://{website_url}' + base_url + '\n\n')
+    print(f'Try to open\n\n    https://{website_url}' + base_url + '\n\n')
     app.run(host='0.0.0.0', port=port, debug=True)
 
 

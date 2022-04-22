@@ -80,10 +80,11 @@ textarea.text_prompt {
       font-family: "Helvetica Neue", sans-serif;
       white-space: pre-line;
       }
- textarea.text_prompt::placeholder {
+textarea.text_prompt::placeholder {
         color: #fff;
 
       }
+
       /* no shadow box */
 textarea.text_prompt:focus {
         outline:0px !important;
@@ -91,6 +92,13 @@ textarea.text_prompt:focus {
         box-shadow: none !important;
       }
 
+img.strip {
+  padding: 10px;
+  border-top: 1px solid silver;
+  border-top: 1px solid silver;
+  width: 600px;
+  text-align: left;
+}
 
 
 
