@@ -1,0 +1,7 @@
+To bypass PythonAnywhere file size limit 
+
+Split a file with command
+split -b 50m FILENAME
+
+join them with 
+cat file1 file2 file3 > FILENAME
